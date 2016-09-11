@@ -15,20 +15,30 @@ public class TestFlush {
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(TestFlush.class);
 	private static String hostName = "localhost";
 	private static int jmxPort = 7199;
+	private static String snapshotName = "jarvis";
 	
 	public static void main(String[] args) throws ExecutionException, InterruptedException {
 		try {
 			jmxNodeTool = new JMXNodeTool(hostName, jmxPort);
-			// first flush
-			jmxNodeTool.flush();
-			// then take snapshot
-			//jmxNodeTool.snapshot();
-			jmxNodeTool.clearSnapshot("jarvis");
+			flush();
+			takeSnapshot(snapshotName);
+			clearSnapshot(snapshotName);
+			System.out.println("successfully done!!");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			logger.error("can't flush the keyspaces");
 			e.printStackTrace();
 		}
-		System.out.println("flushed successfully!!");
+	}
+	
+	private static void takeSnapshot(String snapshot) throws IOException{
+		jmxNodeTool.snapshot(snapshot);
+	}
+	
+	private static void clearSnapshot(String snapshot) throws IOException{
+		jmxNodeTool.clearSnapshot(snapshot);
+	}
+	
+	private static void flush() throws IOException, ExecutionException, InterruptedException{
+		jmxNodeTool.flush();
 	}
 }
